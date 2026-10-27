@@ -106,7 +106,7 @@ src/inc.zig    .inc generation
 - [ ] Consistent error messages and exit codes.
 - [ ] `README.md`: usage + `.til` format.
 - [ ] Renamed Dockerfile entrypoint.
-- [ ] Add `LICENSE` (GPL-3.0).
+- [x] Add `LICENSE` (GPL-3.0).
 
 **Done when:** `zig build test` and `ReleaseFast` build pass, and a manual CLI smoke test works.
 
