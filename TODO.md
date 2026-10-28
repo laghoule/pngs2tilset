@@ -44,8 +44,8 @@ src/inc.zig    .inc generation
 
 ## Phase 0 - Setup
 
-- [ ] Rename the binary `png2til` -> `pngs2tiles` in `build.zig` and the `dockerfile`.
-- [ ] Verify `zig build` and `zig build test` on Zig 0.17.
+- [x] Rename the binary `png2til` -> `pngs2tiles` in `build.zig` and the `dockerfile`.
+- [x] Verify `zig build` and `zig build test` on Zig 0.17.
 
 **Done when:** `zig-out/bin/pngs2tiles` is produced and build + tests are green.
 

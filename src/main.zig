@@ -1,5 +1,5 @@
 const std = @import("std");
-const p2t = @import("png2til");
+const p2t = @import("p2ts");
 
 pub fn main(init: std.process.Init) !void {
     const arena: std.mem.Allocator = init.arena.allocator();
@@ -10,5 +10,5 @@ pub fn main(init: std.process.Init) !void {
         std.log.info("arg: {s}", .{arg});
     }
 
-    try p2t.println(init.io, "png2til");
+    try p2t.println(init.io, "pngs2tilset");
 }
