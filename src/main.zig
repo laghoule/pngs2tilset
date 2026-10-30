@@ -27,19 +27,19 @@ pub fn main(init: std.process.Init) !void {
         const flag = std.meta.stringToEnum(Flag, arg[2..]) orelse return argsError.InvalidArgument; // TODO: print help when invalid
         switch (flag) {
             .source, .s => {
-                try p2ts.println(init.io, "source");
+                try p2ts.printf(init.io, "{s}", .{"source"});
             },
             .destination, .d => {
-                try p2ts.println(init.io, "destination");
+                try p2ts.printf(init.io, "{s}", .{"destination"});
             },
             .palette, .p => {
-                try p2ts.println(init.io, "palette");
+                try p2ts.printf(init.io, "{s}", .{"palette"});
             },
             .version, .v => {
-                try p2ts.println(init.io, "version");
+                try p2ts.printf(init.io, "{s}", .{"version"});
             },
             .help, .h => {
-                try p2ts.println(init.io, "help");
+                try p2ts.printf(init.io, "{s}", .{"help"});
             },
         }
     }
