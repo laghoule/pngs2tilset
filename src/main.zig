@@ -18,11 +18,13 @@ pub fn main(init: std.process.Init) !void {
         h,
     };
 
+    try p2ts.printf(init.io, "pngs2tileset version {s}\n", .{"x.x.x"});
+
     const args = try init.minimal.args.toSlice(arena);
-    for (args) |arg| {
+    for (args[1..]) |arg| {
         std.log.info("arg: {s}", .{arg});
         if (!std.mem.startsWith(u8, arg, "--")) return argsError.InvalidArgument;
-        const flag = std.meta.stringToEnum(Flag, arg[2..]) orelse return argsError.InvalidArgument;
+        const flag = std.meta.stringToEnum(Flag, arg[2..]) orelse return argsError.InvalidArgument; // TODO: print help when invalid
         switch (flag) {
             .source, .s => {
                 try p2ts.println(init.io, "source");

@@ -1,11 +1,8 @@
 const std = @import("std");
 const Io = std.Io;
 
-pub fn println(io: Io, message: []const u8) Io.Writer.Error!void {
-    var buffer: [1024]u8 = undefined;
-    var stdout_file_writer: Io.File.Writer = .init(.stdout(), io, &buffer);
-    const stdout_writer = &stdout_file_writer.interface;
-
-    try stdout_writer.print("{s}\n", .{message});
-    try stdout_writer.flush();
+pub fn printf(io: Io, comptime fmt: []const u8, args: anytype) !void {
+    var buf: [1024]u8 = undefined;
+    const formatted = try std.mem.print(&buf, fmt, args);
+    try std.Io.File.stdout().writeStreamingAll(io, formatted);
 }
