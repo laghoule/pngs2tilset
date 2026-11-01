@@ -12,12 +12,25 @@ The output targets the same engine as `png2pal`/`tiled2map` (mquest), so the
 rendering logic mirrors `png2pal`: nearest color by squared Euclidean distance
 in RGB space, with index 0 reserved for transparency.
 
+## How to work on this file (working agreement)
+
+- One phase in progress at a time. Mark it next to the phase heading with
+  `[in progress]` and clear the mark once its **Done when** is satisfied.
+- A new phase starts only when the previous phase's **Done when** plus the
+  STYLE.md checklist are green.
+- Start every work session by re-reading only the current phase, not the
+  whole file. The rest of the plan is on paper, not in memory.
+- Bugs, Zig API surprises and detours discovered mid-phase go to
+  "Later / to decide", so the current phase keeps a single thread.
+- New decisions are appended to the Decisions table in the same commit that
+  implements them.
+
 ## Decisions
 
 | Topic | Choice |
 |---|---|
-| Binary name | `pngs2tiles` |
-| CLI | `pngs2tiles --source a.png b.png ... --palette p.gpl --destination out.til` plus `--help` / `--version` |
+| Binary name | `pngs2tileset` |
+| CLI | `pngs2tileset --source a.png b.png ... --palette p.gpl --destination out.til` plus `--help` / `--version` |
 | Input | 1 PNG = 1 tile, stacked in order |
 | Dimensions | All PNGs must share the same dimensions (this defines the tile size), otherwise error |
 | Ordering | Alphabetical by file path, guaranteed by the tool |
@@ -44,12 +57,12 @@ src/inc.zig    .inc generation
 
 ## Phase 0 - Setup
 
-- [x] Rename the binary `png2til` -> `pngs2tiles` in `build.zig` and the `dockerfile`.
+- [x] Rename the binary `png2til` -> `pngs2tileset` in `build.zig` and the `dockerfile`.
 - [x] Verify `zig build` and `zig build test` on Zig 0.17.
 
-**Done when:** `zig-out/bin/pngs2tiles` is produced and build + tests are green.
+**Done when:** `zig-out/bin/pngs2tileset` is produced and build + tests are green.
 
-## Phase 1 - CLI
+## Phase 1 - CLI `[in progress]`
 
 - [ ] Parse arguments manually: `--source` (list), `--palette`, `--destination`, `--help`, `--version`.
 - [ ] Validate that the three required options are present and at least one PNG is given.
