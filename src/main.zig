@@ -3,6 +3,12 @@ const p2ts = @import("p2ts");
 
 const argsError = error{InvalidArgument};
 
+pub fn printf(io: std.Io, comptime fmt: []const u8, args: anytype) !void {
+    var buf: [1024]u8 = undefined;
+    const formatted = try std.mem.print(&buf, fmt, args);
+    try std.Io.File.stdout().writeStreamingAll(io, formatted);
+}
+
 pub fn main(init: std.process.Init) !void {
     const arena: std.mem.Allocator = init.arena.allocator();
     const Flag = enum {
@@ -18,7 +24,7 @@ pub fn main(init: std.process.Init) !void {
         h,
     };
 
-    try p2ts.printf(init.io, "pngs2tileset version {s}\n", .{"x.x.x"});
+    try printf(init.io, "pngs2tileset version {s}\n", .{"x.x.x"});
 
     const args = try init.minimal.args.toSlice(arena);
     for (args[1..]) |arg| {
@@ -27,19 +33,19 @@ pub fn main(init: std.process.Init) !void {
         const flag = std.meta.stringToEnum(Flag, arg[2..]) orelse return argsError.InvalidArgument; // TODO: print help when invalid
         switch (flag) {
             .source, .s => {
-                try p2ts.printf(init.io, "{s}", .{"source"});
+                try printf(init.io, "{s}", .{"source"});
             },
             .destination, .d => {
-                try p2ts.printf(init.io, "{s}", .{"destination"});
+                try printf(init.io, "{s}", .{"destination"});
             },
             .palette, .p => {
-                try p2ts.printf(init.io, "{s}", .{"palette"});
+                try printf(init.io, "{s}", .{"palette"});
             },
             .version, .v => {
-                try p2ts.printf(init.io, "{s}", .{"version"});
+                try printf(init.io, "{s}", .{"version"});
             },
             .help, .h => {
-                try p2ts.printf(init.io, "{s}", .{"help"});
+                try printf(init.io, "{s}", .{"help"});
             },
         }
     }
