@@ -1,8 +1,15 @@
 const std = @import("std");
 const Io = std.Io;
 
-pub fn printf(io: Io, comptime fmt: []const u8, args: anytype) !void {
-    var buf: [1024]u8 = undefined;
-    const formatted = try std.mem.print(&buf, fmt, args);
-    try std.Io.File.stdout().writeStreamingAll(io, formatted);
-}
+const palette = struct {
+    colors: [256]color,
+
+    //pub fn load(self: *palette, paletteFile: []const u8) void {
+    //}
+};
+
+const color = struct {
+    r: u8 = 0,
+    g: u8 = 0,
+    b: u8 = 0,
+};
