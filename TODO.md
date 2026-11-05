@@ -30,7 +30,7 @@ in RGB space, with index 0 reserved for transparency.
 | Topic | Choice |
 |---|---|
 | Binary name | `pngs2tileset` |
-| CLI | `pngs2tileset --source a.png b.png ... --palette p.gpl --destination out.til` plus `--help` / `--version` |
+| CLI | GNU/Go-flag style: every option takes exactly one value; `--source` is repeatable (one PNG per flag): `pngs2tileset --source a.png --source b.png --palette p.gpl --destination out.til` plus `--help` / `--version` |
 | Input | 1 PNG = 1 tile, stacked in order |
 | Dimensions | All PNGs must share the same dimensions (this defines the tile size), otherwise error |
 | Ordering | Alphabetical by file path, guaranteed by the tool |
@@ -64,7 +64,7 @@ src/inc.zig    .inc generation
 
 ## Phase 1 - CLI `[in progress]`
 
-- [ ] Parse arguments manually: `--source` (list), `--palette`, `--destination`, `--help`, `--version`.
+- [ ] Parse arguments manually, Go-flag semantics: `--source` (repeatable, one value each), `--palette`, `--destination`; `--help` / `--version` take no value.
 - [ ] Validate that the three required options are present and at least one PNG is given.
 - [ ] Print a clear usage message, write errors to stderr, exit 1.
 
@@ -125,6 +125,7 @@ src/inc.zig    .inc generation
 
 ## Later / to decide
 
+- Support the collapsed `--flag=value` form (Go-flag compatibility); deferred from Phase 1 (Phase 1 accepts only `--flag value`).
 - Exact `.inc` format (to refine later).
 - Deduplicate identical tiles (probably not).
 - GitHub Actions release (multi-platform).
