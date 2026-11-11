@@ -16,18 +16,20 @@ const Flag = enum {
     h,
 };
 
+const ParseResult = enum { parsed, exit_ok };
+
 const Arguments = struct {
     source: []const []const u8 = &.{},
     destination: ?[]const u8 = null,
     palette: ?[]const u8 = null,
 
-    fn parse(self: *Arguments, arena: std.mem.Allocator, io: std.Io, args: []const []const u8) !void {
+    fn parse(self: *Arguments, arena: std.mem.Allocator, io: std.Io, args: []const []const u8) !ParseResult {
         var sources: std.ArrayList([]const u8) = .empty;
 
         for (args[1..], 1..) |arg, i| {
             if (@mod(i, 2) != 0) {
-                if (i + 1 >= args.len) return argsError.MissingArgument; // TODO: maybe move to validate?
-                if (!std.mem.startsWith(u8, arg, "--")) return argsError.InvalidArgument; // TODO: maybe move to validate?
+                if (i + 1 > args.len) return argsError.MissingArgument;
+                if (!std.mem.startsWith(u8, arg, "--")) return argsError.InvalidArgument;
 
                 const flag = std.meta.stringToEnum(Flag, arg[2..]) orelse return argsError.InvalidArgument; // TODO: print help when invalid
                 switch (flag) {
@@ -41,15 +43,20 @@ const Arguments = struct {
                         self.palette = args[i + 1];
                     },
                     .version, .v => {
-                        try printf(io, "Here, we print version", .{});
+                        try printf(io, "Here, we print version\n", .{});
+                        return ParseResult.exit_ok;
                     },
                     .help, .h => {
-                        try printf(io, "Here, we print help", .{});
+                        // help is special and should be checked first
+                        // not in this loop??
+                        try printf(io, "Here, we print help\n", .{});
+                        return ParseResult.exit_ok;
                     },
                 }
             }
         }
         self.source = sources.items;
+        return ParseResult.parsed;
     }
 
     fn validate(self: Arguments) argsError!void {
@@ -66,7 +73,7 @@ pub fn main(init: std.process.Init) !void {
 
     const args = try init.minimal.args.toSlice(arena);
     var arguments: Arguments = .{};
-    try arguments.parse(arena, init.io, args);
+    if (try arguments.parse(arena, init.io, args) == ParseResult.exit_ok) return ;
     try arguments.validate();
 
     try printf(init.io, "creating tileset {s} from ", .{arguments.destination.?});
