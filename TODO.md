@@ -40,6 +40,7 @@ in RGB space, with index 0 reserved for transparency.
 | Transparency | alpha 0 -> index 0; partial alpha -> error |
 | `.inc` | Auto-generated as `<destination-base>-refs.inc`, content still provisional |
 | Errors | Fail-fast, exit code != 0, delete partial outputs |
+| Usage errors | `parse` reports them as a tagged union (`ParseOutcome`) carrying the offending argument, not an error set; `validate` keeps an error set (finite cases). Messages go to stderr, `main` returns `!u8` |
 | Tests | Unit tests only, run with `zig build test` |
 | Zig | 0.17 + `zigimg` |
 | Packaging | Fix the Dockerfile now, CI later, GPL-3.0 |
@@ -64,9 +65,11 @@ src/inc.zig    .inc generation
 
 ## Phase 1 - CLI `[in progress]`
 
-- [ ] Parse arguments manually, Go-flag semantics: `--source` (repeatable, one value each), `--palette`, `--destination`; `--help` / `--version` take no value.
-- [ ] Validate that the three required options are present and at least one PNG is given.
-- [ ] Print a clear usage message, write errors to stderr, exit 1.
+- [x] Parse arguments manually, Go-flag semantics: `--source` (repeatable, one value each), `--palette`, `--destination`; `--help` / `--version` take no value.
+- [x] Validate that the three required options are present and at least one PNG is given.
+- [x] Print a clear usage message, write errors to stderr, exit 1.
+- [ ] Unit tests on `parse`/`validate` in `src/main.zig` (no I/O, in-memory): valid case, unknown flag, missing value, `--help`, `--version`, each missing required option.
+- [ ] Cleanup: drop the dead `p2ts` import and `ArgsError`, keep the print helpers private — `pub` is inert in the executable's root module.
 
 **Done when:** `--help`, `--version`, missing arguments and unknown arguments all behave correctly.
 
@@ -130,3 +133,11 @@ src/inc.zig    .inc generation
 - Deduplicate identical tiles (probably not).
 - GitHub Actions release (multi-platform).
 - Sprite sheet support - out of scope for now.
+- Replace the parity-based argument loop (`@mod(i, 2)`) with a `while` loop
+  that consumes its flag's value; the parity scheme only works because
+  `--help`/`--version` return immediately. Replaces the in-code TODO comment
+  in `Arguments.parse`.
+- Print-helper failure modes: a closed stdout (`--help | head -1`) and a
+  formatted message longer than the 1024-byte buffer both surface as a raw Zig
+  stack trace (`error.BrokenPipe`, `error.NoSpaceLeft`). Decide how to report
+  them.
